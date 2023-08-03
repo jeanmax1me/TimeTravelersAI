@@ -35,6 +35,7 @@ export async function PATCH(
     const traveler = await prismadb.traveler.update({
       where: {
         id: params.travelerId,
+        userId: user.id,
       },
       data: {
         categoryId,

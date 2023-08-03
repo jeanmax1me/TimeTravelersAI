@@ -1,3 +1,4 @@
+import { auth, redirectToSignIn } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 import { TravelerForm } from "./components/traveler-form";
 
@@ -8,10 +9,16 @@ interface TravelerIdPageProps {
 };
 
 const TravelerIdPage = async ({params}: TravelerIdPageProps) => {
-    // TODO : check premium user
+   const { userId } = auth();
+
+   if (!userId) {
+    return redirectToSignIn();
+   }
 
 const traveler = await prismadb.traveler.findUnique({
-    where: {id: params.travelerId,
+    where: {
+        id: params.travelerId,
+        userId
     }
 })
 
