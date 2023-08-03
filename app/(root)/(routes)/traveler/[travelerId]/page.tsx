@@ -1,5 +1,5 @@
 import prismadb from "@/lib/prismadb";
-import TravelerForm from "./components/traveler-form";
+import { TravelerForm } from "./components/traveler-form";
 
 interface TravelerIdPageProps {
     params: {
