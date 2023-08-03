@@ -1,5 +1,5 @@
 import prismadb from "@/lib/prismadb";
-import { currentUser } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 export async function PATCH(
@@ -51,6 +51,32 @@ export async function PATCH(
     return NextResponse.json(traveler);
   } catch (error) {
     console.log("[TRAVELER_PATCH]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { travelerId: string } }
+) {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const traveler = await prismadb.traveler.delete({
+      where: {
+        userId,
+        id: params.travelerId,
+      }
+    });
+
+return NextResponse.json(traveler);
+
+  } catch (error) {
+    console.log("[TRAVELER_DELETE", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
