@@ -17,7 +17,7 @@ export const Sidebar = () => {
     },
     {
       icon: Plus,
-      href: "/timetraveler/new",
+      href: "/traveler/new",
       label: "Create",
       pro: true,
     },
