@@ -8,6 +8,8 @@ import { useCompletion } from "ai/react";
 import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/components/ui/use-toast";
 import { ChatForm } from "@/components/chat-form";
+import { ChatMessages } from "@/components/chat-messages";
+import { ChatMessageProps } from "@/components/chat-message";
 
 interface ChatClientProps {
   traveler: Traveler & {
@@ -20,7 +22,7 @@ interface ChatClientProps {
 
 export const ChatClient = ({ traveler }: ChatClientProps) => {
   const router = useRouter();
-  const [messages, setMessages] = useState<any[]>(traveler.messages);
+  const [messages, setMessages] = useState<ChatMessageProps[]>(traveler.messages);
   const { user } = useUser();
   const { toast } = useToast();
 
@@ -28,7 +30,7 @@ export const ChatClient = ({ traveler }: ChatClientProps) => {
     useCompletion({
       api: `/api/chat/${traveler.id}`,
       onFinish(prompt, completion) {
-        const systemMessage = {
+        const systemMessage: ChatMessageProps = {
           role: "system",
           content: completion,
         };
@@ -50,7 +52,7 @@ export const ChatClient = ({ traveler }: ChatClientProps) => {
     e.preventDefault();
 
     try {
-      const userMessage = {
+      const userMessage: ChatMessageProps = {
         role: "user",
         content: input,
       };
@@ -69,7 +71,11 @@ export const ChatClient = ({ traveler }: ChatClientProps) => {
   return (
     <div className="flex flex-col h-full p-4 space-y-2">
       <ChatHeader traveler={traveler} />
-      <div>Messages To Do</div>
+      <ChatMessages
+      traveler={traveler}
+      isLoading={isLoading}
+      messages={messages}
+      />
       <ChatForm
         isLoading={isLoading}
         input={input}
