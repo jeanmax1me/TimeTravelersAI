@@ -2,29 +2,56 @@
 
 import { Traveler } from "@prisma/client";
 import { ChatMessage, ChatMessageProps } from "./chat-message";
+import { useEffect, useRef, useState, ElementRef } from "react";
 
 interface ChatMessagesProps {
-    messages: ChatMessageProps[];
-    isLoading: boolean;
-    traveler: Traveler;
-};
+  messages: ChatMessageProps[];
+  isLoading: boolean;
+  traveler: Traveler;
+}
 
 export const ChatMessages = ({
-    messages: [],
-    isLoading,
-    traveler
+  messages = [],
+  isLoading,
+  traveler,
 }: ChatMessagesProps) => {
-    return (
-        <div className="flex-1 overflow-y-auto pr-4">
-        <ChatMessage
-        src={traveler.src} 
+  const scrollRef = useRef<ElementRef<"div">>(null);
+
+  const [fakeLoading, setFakeLoading] = useState(
+    messages.length === 0 ? true : false
+  );
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setFakeLoading(false);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  useEffect(() => {
+    scrollRef?.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length]);
+
+  return (
+    <div className="flex-1 overflow-y-auto pr-4">
+      <ChatMessage
+        isLoading={fakeLoading}
+        src={traveler.src}
         role="system"
         content={`Hello, I am ${traveler.name}, ${traveler.description}`}
+      />
+      {messages.map((message) => (
+        <ChatMessage
+          key={message.content}
+          role={message.role}
+          content={message.content}
+          src={message.src}
         />
-         <ChatMessage
-        role="user"
-        content={`yooo julius`}
-        />
-        </div>
-        )
-}
+      ))}
+      {isLoading && <ChatMessage role="system" src={traveler.src} isLoading />}
+      <div ref={scrollRef} />
+    </div>
+  );
+};
