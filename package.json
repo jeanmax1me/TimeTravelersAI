@@ -16,7 +16,7 @@
     "@pinecone-database/pinecone": "",
     "@prisma/client": "",
     "@radix-ui/react-avatar": "",
-    "@radix-ui/react-dialog": "",
+    "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "",
     "@radix-ui/react-label": "",
     "@radix-ui/react-select": "",
@@ -59,7 +59,7 @@
     "tailwindcss-animate": "",
     "typescript": "",
     "zod": "",
-    "zustand": ""
+    "zustand": "^4.4.0"
   },
   "devDependencies": {
     "prisma": ""

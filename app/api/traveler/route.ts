@@ -1,4 +1,5 @@
 import prismadb from "@/lib/prismadb";
+import { checkSubscription } from "@/lib/subscription";
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
@@ -17,7 +18,11 @@ if (!src || !name || !description || !instructions || !seed || !categoryId) {
     return new NextResponse("Missing required fields", { status: 400})
 }
 
-//todo check for premium acc
+const isPro = await checkSubscription();
+
+if (!isPro) {
+    return new NextResponse("Pro subscription required" , {status: 403});
+}
 
 const traveler = await prismadb.traveler.create({
     data: {
